@@ -118,35 +118,10 @@ export default function HomePage() {
         >
           <Settings size={18} strokeWidth={1.75} />
         </button>
-
-        <div className="flex items-center gap-2 pointer-events-auto">
-          <button
-            type="button"
-            onClick={() => {
-              haptic.medium()
-              toggleTheme()
-            }}
-            className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-xl bg-white/80 dark:bg-black/60 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/60 transition-all duration-200 backdrop-blur-sm shadow-sm"
-            aria-label={language === 'ar' ? 'تبديل المظهر' : 'Toggle theme'}
-          >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              haptic.medium()
-              toggleLanguage()
-            }}
-            className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-xl bg-white/80 dark:bg-black/60 border border-accent/30 text-xs font-bold text-accent hover:bg-accent hover:text-white dark:hover:text-black transition-all duration-200 backdrop-blur-sm shadow-sm"
-          >
-            {language === 'ar' ? 'EN' : 'AR'}
-          </button>
-        </div>
       </div>
 
       {/* Premium Hero Section - Fullscreen */}
-      <div className="relative w-screen left-1/2 right-1/2 -mx-[50vw] h-[320px] sm:h-[380px] md:h-[480px] overflow-hidden select-none bg-black -mt-4 sm:-mt-6">
+      <div className="relative w-screen left-1/2 right-1/2 -mx-[50vw] h-[320px] sm:h-[380px] md:h-[480px] lg:h-[550px] xl:h-[600px] overflow-hidden select-none bg-black -mt-4 sm:-mt-6">
         {/* Background Image */}
         <img
           src="/premium-trophy-bg.webp"
@@ -162,20 +137,20 @@ export default function HomePage() {
         <div className={`absolute inset-0 z-10 ${isRtl ? 'bg-gradient-to-l from-bg-primary/95 via-bg-primary/70 to-transparent' : 'bg-gradient-to-r from-bg-primary/95 via-bg-primary/70 to-transparent'}`} />
 
         {/* Hero Text Content */}
-        <div className={`absolute inset-0 z-20 flex flex-col justify-center px-6 sm:px-8 md:px-12 ${isRtl ? 'items-start pr-8 sm:pr-12' : 'items-start pl-8 sm:pl-12'}`}>
-          <div className={`flex flex-col gap-3 sm:gap-4 max-w-lg ${isRtl ? 'items-start text-right' : 'items-start text-left'}`}>
+        <div className={`absolute inset-0 z-20 flex flex-col justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 ${isRtl ? 'items-start pr-4 sm:pr-6 lg:pr-12 xl:pr-16' : 'items-start pl-4 sm:pl-6 lg:pl-12 xl:pl-16'}`}>
+          <div className={`flex flex-col gap-3 sm:gap-4 max-w-lg lg:max-w-xl xl:max-w-2xl ${isRtl ? 'items-start text-right' : 'items-start text-left'}`}>
             {/* Subtitle badge */}
             <span className="hero-content opacity-100 text-accent-light text-xs sm:text-sm font-bold uppercase tracking-widest bg-accent/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-accent/20 whitespace-nowrap">
               {t.home.subtitle}
             </span>
 
             {/* Main Title */}
-            <h2 className="hero-content opacity-100 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-accent drop-shadow-md dark:drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)] leading-tight">
+            <h2 className="hero-content opacity-100 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight text-accent drop-shadow-md dark:drop-shadow-[0_2px_14px_rgba(0,0,0,0.95)] leading-tight">
               {t.home.title}
             </h2>
 
             {/* Gold Stars */}
-            <div className="hero-content flex text-accent text-lg sm:text-xl gap-3">
+            <div className="hero-content flex text-accent text-lg sm:text-xl lg:text-2xl xl:text-3xl gap-3">
               <span>★</span>
               <span>★</span>
               <span>★</span>
@@ -185,41 +160,41 @@ export default function HomePage() {
       </div>
 
        {/* Stats Cards floating over the Hero bottom */}
-      <div className="relative z-30 -mt-14 sm:-mt-16 md:-mt-20 px-4 sm:px-6 max-w-2xl mx-auto">
-        <div className="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+      <div className="relative z-30 -mt-14 sm:-mt-16 md:-mt-20 lg:-mt-24 xl:-mt-28 px-4 sm:px-6 lg:px-8 xl:px-12 max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto">
+        <div className="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 lg:gap-6 xl:gap-8">
           <StatCard
             key={`teams-${lang}-${teams.length}`}
             value={teams.length}
             label={t.home.team}
             delay={0}
-            className="backdrop-blur-md shadow-md py-3 sm:py-4"
+            className="backdrop-blur-md shadow-md py-3 sm:py-4 lg:py-5 xl:py-6"
           />
           <StatCard
             key={`matches-${lang}-${matches.length}`}
             value={matches.length}
             label={t.home.match}
             delay={0.1}
-            className="backdrop-blur-md shadow-md py-3 sm:py-4"
+            className="backdrop-blur-md shadow-md py-3 sm:py-4 lg:py-5 xl:py-6"
           />
           <StatCard
             key={`goals-${lang}-${totalGoals}`}
             value={totalGoals}
             label={t.home.goal}
             delay={0.2}
-            className="backdrop-blur-md shadow-md py-3 sm:py-4"
+            className="backdrop-blur-md shadow-md py-3 sm:py-4 lg:py-5 xl:py-6"
           />
           <StatCard
             key={`players-${lang}-${totalPlayers}`}
             value={totalPlayers}
             label={t.home.players}
             delay={0.3}
-            className="backdrop-blur-md shadow-md py-3 sm:py-4"
+            className="backdrop-blur-md shadow-md py-3 sm:py-4 lg:py-5 xl:py-6"
           />
         </div>
       </div>
 
       {/* Main Content - Centered with max width */}
-      <div className="px-4 sm:px-6 max-w-2xl mx-auto space-y-6">
+      <div className="px-4 sm:px-6 lg:px-8 xl:px-12 max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto space-y-6 lg:space-y-8 xl:space-y-10">
         {/* Main Actions */}
         <div className="flex gap-3 pt-2 sm:pt-4">
           <Link to="/standings" className="flex-1">

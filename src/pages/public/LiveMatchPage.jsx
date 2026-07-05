@@ -108,14 +108,14 @@ export default function LiveMatchPage() {
   const status = getMatchDisplayStatus(enriched)
 
   return (
-    <div className="px-4 py-6 space-y-6">
+    <div className="px-4 py-6 lg:px-8 xl:px-12 space-y-6 lg:space-y-8 max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto">
       <button
         type="button"
         onClick={() => {
           haptic.light()
           navigate(-1)
         }}
-        className="flex items-center gap-2 text-sm text-text-secondary hover:text-accent transition-colors"
+        className="flex items-center gap-2 text-sm lg:text-base text-text-secondary hover:text-accent transition-colors"
       >
         <ArrowLeft size={16} className="rtl:rotate-180" />
         <span>{t[lang].back}</span>
@@ -123,34 +123,34 @@ export default function LiveMatchPage() {
 
       <div className="text-center space-y-2">
         {status === 'live' ? (
-          <span className="inline-flex items-center gap-2 text-live font-bold text-sm">
+          <span className="inline-flex items-center gap-2 text-live font-bold text-sm lg:text-base">
             <Radio size={14} className="animate-pulse" />
             <span className="w-2 h-2 rounded-full bg-live animate-pulse" />
             {t[lang].live}
           </span>
         ) : (
-          <span className="text-sm text-text-secondary">
+          <span className="text-sm lg:text-base text-text-secondary">
             {status === 'completed' ? t[lang].completed : t[lang].upcoming} • {enriched.round ? (t[lang].round[enriched.round] || enriched.round) : t[lang].group(enriched.group)}
           </span>
         )}
       </div>
 
-      <DarkCard className="p-6">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex flex-col items-center gap-3 flex-1 min-w-0">
+      <DarkCard className="p-6 lg:p-8 xl:p-10">
+        <div className="flex items-center justify-between gap-4 lg:gap-8">
+          <div className="flex flex-col items-center gap-3 lg:gap-4 flex-1 min-w-0">
             <TeamLogo logo={enriched.homeLogo} name={enriched.home} color={enriched.homeColor} size="lg" />
-            <span className="font-bold text-center line-clamp-2">{enriched.home}</span>
+            <span className="font-bold text-center line-clamp-2 text-sm lg:text-base xl:text-lg">{enriched.home}</span>
           </div>
 
-          <div className="flex flex-col items-center shrink-0 px-2">
+          <div className="flex flex-col items-center shrink-0 px-2 lg:px-4">
             {status === 'upcoming' ? (
-              <span className="text-3xl font-bold text-text-secondary">VS</span>
+              <span className="text-3xl lg:text-4xl xl:text-5xl font-bold text-text-secondary">VS</span>
             ) : (
               <motion.span
                 key={`${scoreA}-${scoreB}`}
                 initial={{ scale: 1.2, opacity: 0.5 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="text-4xl font-bold text-accent tracking-widest"
+                className="text-4xl lg:text-5xl xl:text-6xl font-bold text-accent tracking-widest"
                 dir="ltr"
               >
                 {lang === 'ar'
@@ -160,13 +160,13 @@ export default function LiveMatchPage() {
             )}
           </div>
 
-          <div className="flex flex-col items-center gap-3 flex-1 min-w-0">
+          <div className="flex flex-col items-center gap-3 lg:gap-4 flex-1 min-w-0">
             <TeamLogo logo={enriched.awayLogo} name={enriched.away} color={enriched.awayColor} size="lg" />
-            <span className="font-bold text-center line-clamp-2">{enriched.away}</span>
+            <span className="font-bold text-center line-clamp-2 text-sm lg:text-base xl:text-lg">{enriched.away}</span>
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-4 mt-6 pt-4 border-t border-border text-xs text-text-secondary">
+        <div className="flex flex-wrap justify-center gap-4 lg:gap-6 mt-6 lg:mt-8 pt-4 lg:pt-6 border-t border-border text-xs lg:text-sm text-text-secondary">
           <span className="flex items-center gap-1">
             <Calendar size={12} />
             {formatMatchDate(enriched.date, lang)}
@@ -186,8 +186,8 @@ export default function LiveMatchPage() {
 
       {(status === 'live' || status === 'completed') && events.length > 0 && (
         <section>
-          <h2 className="text-lg font-bold mb-3">{t[lang].events}</h2>
-          <div className="space-y-2">
+          <h2 className="text-lg lg:text-xl xl:text-2xl font-bold mb-3 lg:mb-4">{t[lang].events}</h2>
+          <div className="space-y-2 lg:space-y-3">
             {events.map((event, index) => {
               const isGoal = event.type === 'goal' || event.player
               const playerName = event.player || event.name
@@ -200,12 +200,12 @@ export default function LiveMatchPage() {
                     : null
 
               return (
-                <DarkCard key={index} className="p-3 flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <span>{isGoal ? '⚽' : '📋'}</span>
+                <DarkCard key={index} className="p-3 lg:p-4 flex items-center justify-between text-sm lg:text-base">
+                  <div className="flex items-center gap-2 lg:gap-3">
+                    <span className="text-lg lg:text-xl">{isGoal ? '⚽' : '📋'}</span>
                     <span className="font-medium">{playerName}</span>
                     {teamName && (
-                      <span className="text-text-secondary text-xs">({teamName})</span>
+                      <span className="text-text-secondary text-xs lg:text-sm">({teamName})</span>
                     )}
                   </div>
                   {minute != null && (
@@ -221,9 +221,9 @@ export default function LiveMatchPage() {
       )}
 
       {status === 'upcoming' && (
-        <DarkCard className="p-6 text-center">
-          <p className="text-text-secondary text-sm">{t[lang].notStarted}</p>
-          <Link to="/matches" className="text-accent text-sm mt-2 inline-block hover:underline">
+        <DarkCard className="p-6 lg:p-8 text-center">
+          <p className="text-text-secondary text-sm lg:text-base">{t[lang].notStarted}</p>
+          <Link to="/matches" className="text-accent text-sm lg:text-base mt-2 inline-block hover:underline">
             {t[lang].viewAllMatches}
           </Link>
         </DarkCard>

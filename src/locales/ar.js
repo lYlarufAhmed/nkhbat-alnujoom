@@ -152,7 +152,7 @@ export const ar = {
     loading: 'جاري تحميل الجدول...',
     error: 'تعذر تحميل الجدول',
     tableView: 'جدول المباريات',
-    bracketView: 'الطريق إلى النهائي'
+    bracketView: 'خروج المغلوب'
   },
   standingsTable: {
     rank: '#',

@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useRef, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Trophy, Calendar, MapPin, Download, ChevronDown, FileText } from 'lucide-react'
+import { Trophy, Calendar, MapPin, Download, ChevronDown, FileText, Share2 } from 'lucide-react'
 import { useAppStore } from '../../stores/useAppStore'
 import { useKnockoutStore } from '../../stores/useKnockoutStore'
 import { haptic } from '../../hooks/useHaptics'
@@ -20,6 +20,7 @@ export default function TournamentBracketView({ teams = [], isAdmin = false }) {
   const bracketRef = useRef(null)
   const [capturing, setCapturing] = useState(false)
   const [showDownloadMenu, setShowDownloadMenu] = useState(false)
+  const [isSharing, setIsSharing] = useState(false)
 
   useEffect(() => {
     listenToFirestore()
@@ -337,6 +338,53 @@ export default function TournamentBracketView({ teams = [], isAdmin = false }) {
     }
   }
 
+  const handleShare = async () => {
+    if (!bracketRef.current) return
+    setIsSharing(true)
+    try {
+      const { toPng } = await import('html-to-image')
+      const target = bracketRef.current
+
+      const savedStyles = prepareBracketForCapture(target)
+
+      const dataUrl = await toPng(target, {
+        quality: 1.0,
+        pixelRatio: 2,
+        backgroundColor: captureBg,
+        cacheBust: true,
+      })
+
+      restoreBracketAfterCapture(savedStyles)
+
+      const blob = await (await fetch(dataUrl)).blob()
+      const file = new File([blob], `bracket-${Date.now()}.png`, { type: 'image/png' })
+      const shareData = {
+        title: isAr ? 'طريق النهائي - نخبة النجوم' : 'Road to Finals - Nkhbat Alnujoom',
+        text: isAr ? 'شاهد طريق الفرق للنهائي في بطولة نخبة النجوم' : 'Check out the road to finals in Nkhbat Alnujoom tournament',
+        files: [file],
+      }
+      if (navigator.canShare && navigator.canShare(shareData)) {
+        await navigator.share(shareData)
+      } else {
+        const link = document.createElement('a')
+        link.download = `bracket-${Date.now()}.png`
+        link.href = dataUrl
+        link.click()
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        try {
+          await navigator.clipboard.writeText(window.location.href)
+          alert(isAr ? 'تم نسخ الرابط!' : 'Link copied!')
+        } catch {
+          alert(isAr ? 'فشل المشاركة' : 'Share failed')
+        }
+      }
+    } finally {
+      setIsSharing(false)
+    }
+  }
+
   const { qf, sf, final } = bracketData
   const hasBracket = koMatches.length > 0
 
@@ -433,10 +481,79 @@ export default function TournamentBracketView({ teams = [], isAdmin = false }) {
 
   return (
     <div className="w-full flex flex-col items-center">
-      {/* Download toolbar */}
+      {/* Header with buttons */}
       {hasBracket && (
-        <div className="w-full flex justify-end mb-3">
-          <DownloadButton onDownload={captureAndDownload} isAr={isAr} />
+        <div className="w-full flex items-center gap-3 mb-4 max-w-md mx-auto">
+          <motion.button
+            onClick={() => {
+              haptic.light()
+              handleShare()
+            }}
+            disabled={isSharing || capturing}
+            animate={isSharing ? { scale: [1, 0.95, 1] } : { scale: 1 }}
+            transition={{ duration: 0.3, repeat: isSharing ? Infinity : 0 }}
+            className="flex-1 h-12 px-4 bg-bg-surface border border-border rounded-xl text-sm font-medium text-text-primary hover:bg-bg-primary transition-all flex items-center justify-center gap-2"
+          >
+            <motion.div
+              animate={isSharing ? { rotate: 360 } : { rotate: 0 }}
+              transition={{ duration: 1, repeat: isSharing ? Infinity : 0, ease: "linear" }}
+            >
+              <Share2 size={16} />
+            </motion.div>
+            {isSharing ? (isAr ? 'جاري...' : 'Sharing...') : (isAr ? 'مشاركة' : 'Share')}
+          </motion.button>
+          <div className="relative flex-1">
+            <button
+              onClick={() => {
+                haptic.medium()
+                setShowDownloadMenu(!showDownloadMenu)
+              }}
+              disabled={capturing}
+              className="w-full h-12 px-4 bg-accent text-black font-bold rounded-xl hover:bg-accent-hover transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-accent/20"
+            >
+              {capturing ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                >
+                  <Download size={16} />
+                </motion.div>
+              ) : (
+                <Download size={16} />
+              )}
+              {capturing ? (isAr ? 'جاري...' : 'Downloading...') : (isAr ? 'تحميل' : 'Download')}
+              <ChevronDown size={14} className="opacity-70" />
+            </button>
+            {showDownloadMenu && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setShowDownloadMenu(false)}
+                />
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute top-full end-0 mt-2 w-48 bg-zinc-900 border border-zinc-700 rounded-xl py-1.5 shadow-xl z-20"
+                >
+                  <div className="px-3 py-1.5 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+                    {isAr ? 'تنسيق' : 'Format'}
+                  </div>
+                  <button
+                    onClick={() => { captureAndDownload('png'); setShowDownloadMenu(false) }}
+                    className="w-full px-4 py-2 text-xs text-zinc-300 hover:bg-zinc-800 flex items-center gap-2 cursor-pointer text-start"
+                  >
+                    <Download size={12} /> PNG
+                  </button>
+                  <button
+                    onClick={() => { captureAndDownload('pdf'); setShowDownloadMenu(false) }}
+                    className="w-full px-4 py-2 text-xs text-zinc-300 hover:bg-zinc-800 flex items-center gap-2 cursor-pointer text-start"
+                  >
+                    <FileText size={12} /> PDF
+                  </button>
+                </motion.div>
+              </>
+            )}
+          </div>
         </div>
       )}
 

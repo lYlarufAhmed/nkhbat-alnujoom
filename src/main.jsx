@@ -24,9 +24,22 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>
 )
 
+// Dismiss splash screen — minimum 2s visible, never longer than needed
+const MIN_SPLASH_MS = 2000
+const elapsed = Date.now() - (window.__splashStart || Date.now())
+const remaining = Math.max(MIN_SPLASH_MS - elapsed, 0)
+
+setTimeout(() => {
+  const splash = document.getElementById('app-splash')
+  if (splash) {
+    splash.classList.add('splash-hidden')
+    setTimeout(() => splash.remove(), 400)
+  }
+}, remaining)
+
 // Register service worker for PWA installability
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {})
+    navigator.serviceWorker.register('/sw.js').catch(() => { })
   })
 }

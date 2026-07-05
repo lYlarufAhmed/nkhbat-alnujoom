@@ -4,7 +4,7 @@ import { Download, ChevronDown, FileText } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { haptic } from '../../hooks/useHaptics'
 
-export default function DownloadButton({ onDownload, isAr }) {
+export default function DownloadButton({ onDownload, isAr, className }) {
   const [isLoading, setIsLoading] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   const menuRef = useRef(null)
@@ -75,7 +75,7 @@ export default function DownloadButton({ onDownload, isAr }) {
   }
 
   return (
-    <div className="relative inline-block text-start" ref={menuRef}>
+    <div className={`relative inline-block text-start ${className || ''}`} ref={menuRef}>
       <button
         type="button"
         disabled={isLoading}
@@ -85,7 +85,7 @@ export default function DownloadButton({ onDownload, isAr }) {
             setShowMenu(!showMenu)
           }
         }}
-        className="download-btn-glass"
+        className="w-full h-12 px-4 bg-accent text-black font-bold rounded-xl hover:bg-accent-hover transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-accent/20"
       >
         <AnimatePresence mode="wait">
           {isLoading ? (
@@ -106,11 +106,11 @@ export default function DownloadButton({ onDownload, isAr }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="flex items-center gap-1.5 justify-center h-full w-full text-xs font-semibold"
+              className="flex items-center gap-2 justify-center h-full w-full text-sm font-bold"
             >
-              <Download size={13} />
+              <Download size={16} />
               <span>{isAr ? 'تحميل' : 'Download'}</span>
-              <ChevronDown size={11} className="opacity-70" />
+              <ChevronDown size={14} className="opacity-70" />
             </motion.div>
           )}
         </AnimatePresence>

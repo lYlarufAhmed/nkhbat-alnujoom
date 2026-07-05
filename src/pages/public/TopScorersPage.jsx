@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import DarkCard from '../../components/common/DarkCard'
 import PlayerAvatar from '../../components/common/PlayerAvatar'
-import LightRays from '../../components/effects/LightRays'
 import LoadingState from '../../components/common/LoadingState'
 import ErrorState from '../../components/common/ErrorState'
 import EmptyState from '../../components/common/EmptyState'
@@ -74,9 +73,8 @@ export default function TopScorersPage() {
   ]
 
   return (
-    <div className="px-4 py-6 space-y-8">
-      <div className="relative flex items-end justify-center gap-3 sm:gap-4 h-56 mb-4 mt-10">
-      {top3[0] && <LightRays />}
+    <div className="px-4 py-6 lg:px-8 xl:px-12 space-y-8 lg:space-y-10 max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto">
+      <div className="flex items-end justify-center gap-3 sm:gap-4 lg:gap-6 h-56 lg:h-64 xl:h-72 mb-4 lg:mb-6 mt-10 lg:mt-12">
         {podiumSlots.map(({ rank, scorer }, idx) => {
           const isFirst = rank === 1
 
@@ -173,7 +171,7 @@ export default function TopScorersPage() {
         })}
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 lg:space-y-4">
         {rest.map((scorer, index) => (
           <motion.div
             key={scorer.id}
@@ -181,9 +179,9 @@ export default function TopScorersPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 + index * 0.08 }}
           >
-            <DarkCard className="p-3 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-7 h-7 rounded-full bg-bg-surface flex items-center justify-center text-xs font-bold text-text-secondary shrink-0">
+            <DarkCard className="p-3 lg:p-4 flex items-center justify-between gap-3 lg:gap-4">
+              <div className="flex items-center gap-3 lg:gap-4 min-w-0">
+                <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-bg-surface flex items-center justify-center text-xs lg:text-sm font-bold text-text-secondary shrink-0">
                   {index + 4}
                 </div>
                 <PlayerAvatar
@@ -193,16 +191,16 @@ export default function TopScorersPage() {
                   size="sm"
                 />
                 <div className="flex flex-col min-w-0">
-                  <span className="font-bold text-sm truncate">{scorer.name}</span>
-                  <span className="text-[10px] text-text-secondary truncate">{scorer.team}</span>
+                  <span className="font-bold text-sm lg:text-base truncate">{scorer.name}</span>
+                  <span className="text-[10px] lg:text-xs text-text-secondary truncate">{scorer.team}</span>
                 </div>
               </div>
               <div
-                className="w-11 h-11 flex flex-col items-center justify-center bg-bg-surface rounded-xl border-2 shrink-0"
+                className="w-11 h-11 lg:w-12 lg:h-12 flex flex-col items-center justify-center bg-bg-surface rounded-xl border-2 shrink-0"
                 style={{ borderColor: `${scorer.teamColor}66` }}
               >
-                <span className="font-bold text-accent leading-none">{scorer.goals}</span>
-                <span className="text-[8px] text-text-secondary mt-0.5">{t[lang].goal}</span>
+                <span className="font-bold text-accent leading-none text-sm lg:text-base">{scorer.goals}</span>
+                <span className="text-[8px] lg:text-[10px] text-text-secondary mt-0.5">{t[lang].goal}</span>
               </div>
             </DarkCard>
           </motion.div>

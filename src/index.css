@@ -71,39 +71,26 @@
     color-scheme: dark;
   }
 
-  /* ─── Targeted theme transitions for UI components ─── */
-  .theme-transition body,
-  .theme-transition header,
-  .theme-transition nav,
-  .theme-transition main,
-  .theme-transition div,
-  .theme-transition section,
-  .theme-transition aside,
-  .theme-transition ul,
-  .theme-transition li,
-  .theme-transition button,
-  .theme-transition input,
-  .theme-transition select,
-  .theme-transition a,
-  .theme-transition .glass,
-  .theme-transition .glass-card,
-  .theme-transition h1,
-  .theme-transition h2,
-  .theme-transition h3,
-  .theme-transition h4,
-  .theme-transition p,
-  .theme-transition span,
-  .theme-transition td,
-  .theme-transition th {
+  /* ─── Global smooth theme transitions ─── */
+  .theme-transition *,
+  .theme-transition *::before,
+  .theme-transition *::after {
     transition-property: background-color, border-color, color, fill, stroke, box-shadow, opacity;
-    transition-duration: 350ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 250ms;
+    transition-timing-function: ease-in-out;
   }
 
   /* Exempt transforms/positional animations so they stay instant */
   [style*="transform"],
-  .no-theme-transition {
-    transition-property: none;
+  [style*="translate"],
+  [style*="scale"],
+  [style*="rotate"],
+  .no-theme-transition,
+  .animate-pulse,
+  .animate-spin,
+  .animate-bounce,
+  .animate-ping {
+    transition-property: none !important;
   }
 
   html, body {

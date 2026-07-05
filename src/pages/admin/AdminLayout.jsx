@@ -72,7 +72,7 @@ export default function AdminLayout() {
 
   return (
     <AdminDataSync>
-      <div className="h-[100dvh] w-full overflow-hidden flex flex-col bg-bg-primary transition-colors duration-300">
+      <div className="h-screen h-[100dvh] w-full overflow-hidden flex flex-col bg-bg-primary transition-colors duration-300">
         <header className="h-14 md:h-16 shrink-0 bg-bg-primary border-b border-border px-3 md:px-4 flex items-center justify-between z-50 gap-2">
           <div className="flex items-center gap-2 md:gap-3 min-w-0">
             <Link
@@ -116,7 +116,8 @@ export default function AdminLayout() {
           </div>
         </header>
 
-        <div className="flex-1 flex flex-col md:flex-row w-full max-w-7xl mx-auto overflow-hidden">
+        <div className="flex-1 flex flex-col md:flex-row w-full max-w-7xl mx-auto">
+
           <AdminBottomNav />
 
           <aside className="hidden md:block md:w-56 md:h-full md:border-e md:border-border md:pb-4 shrink-0 overflow-y-auto">
@@ -130,11 +131,10 @@ export default function AdminLayout() {
                       <Link
                         to={item.path}
                         onClick={() => haptic.light()}
-                        className={`flex items-center gap-3 h-11 px-3 rounded-xl transition-all duration-200 ${
-                          isActive
-                            ? 'bg-accent/10 text-accent border border-accent/20'
-                            : 'text-text-secondary hover:text-text-primary hover:bg-bg-surface'
-                        }`}
+                        className={`flex items-center gap-3 h-11 px-3 rounded-xl transition-all duration-200 ${isActive
+                          ? 'bg-accent/10 text-accent border border-accent/20'
+                          : 'text-text-secondary hover:text-text-primary hover:bg-bg-surface'
+                          }`}
                       >
                         <Icon size={20} strokeWidth={isActive ? 2.5 : 1.75} />
                         <span className="text-sm font-medium">{item.label}</span>
@@ -158,7 +158,8 @@ export default function AdminLayout() {
                 }}
               />
             ) : (
-              <div className="max-w-4xl mx-auto h-full">
+              <div className="max-w-4xl mx-auto min-h-full">
+
                 <AdminErrorBanner />
                 <Outlet />
               </div>

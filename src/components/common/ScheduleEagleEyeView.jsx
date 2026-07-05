@@ -274,26 +274,20 @@ export default function ScheduleEagleEyeView({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-lg font-bold flex items-center gap-2">
-          <Calendar size={20} className="text-accent" />
-          {isAr ? 'جدول' : 'Schedule'}
-        </h1>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => {
-              haptic.light()
-              handleShare()
-            }}
-            disabled={capturing}
-            className="px-3 py-2 bg-bg-surface border border-border rounded-xl text-xs font-medium text-text-primary hover:bg-bg-primary transition-all flex items-center gap-1.5"
-          >
-            <Share2 size={14} />
-            {isAr ? 'مشاركة' : 'Share'}
-          </button>
-          <DownloadButton onDownload={captureAndDownload} isAr={isAr} />
-        </div>
+      {/* Header with buttons */}
+      <div className="flex items-center gap-3 max-w-md mx-auto w-full">
+        <button
+          onClick={() => {
+            haptic.light()
+            handleShare()
+          }}
+          disabled={capturing}
+          className="flex-1 h-12 px-4 bg-bg-surface border border-border rounded-xl text-sm font-medium text-text-primary hover:bg-bg-primary transition-all flex items-center justify-center gap-2"
+        >
+          <Share2 size={16} />
+          {isAr ? 'مشاركة' : 'Share'}
+        </button>
+        <DownloadButton onDownload={captureAndDownload} isAr={isAr} className="flex-1 h-12" />
       </div>
 
       {/* Filter chips */}

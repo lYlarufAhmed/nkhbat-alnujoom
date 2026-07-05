@@ -83,10 +83,10 @@ export default function MatchesPage() {
 
   // Silent loading state handled inside the fixed page layout baseline
   return (
-    <div className="px-4 py-6 space-y-6 min-h-[calc(100vh-12rem)] relative">
-      <h1 className="text-2xl font-bold text-center mb-6">{strings.title}</h1>
+    <div className="px-4 py-6 lg:px-8 xl:px-12 space-y-6 lg:space-y-8 min-h-[calc(100vh-12rem)] relative max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto">
+      <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-center mb-6 lg:mb-8">{strings.title}</h1>
 
-      <div className="flex bg-bg-surface rounded-xl p-1 mb-6 relative z-0" dir={isAr ? 'rtl' : 'ltr'}>
+      <div className="flex bg-bg-surface rounded-xl p-1 mb-6 lg:mb-8 relative z-0 max-w-md mx-auto" dir={isAr ? 'rtl' : 'ltr'}>
         {filters.map((f) => (
           <button
             key={f.id}
@@ -95,7 +95,7 @@ export default function MatchesPage() {
               haptic.light()
               setFilter(f.id)
             }}
-            className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors relative z-10 ${
+            className={`flex-1 py-2 lg:py-2.5 text-sm lg:text-base font-semibold rounded-lg transition-colors relative z-10 ${
               filter === f.id ? 'text-white dark:text-black' : 'text-text-secondary hover:text-text-primary'
             }`}
           >
@@ -112,13 +112,8 @@ export default function MatchesPage() {
       </div>
 
       {isLoading ? (
-        // Stable skeleton baseline to prevent layout jumps or screen-blocking spinners
-        <div className="space-y-1">
-          <MatchRowSkeleton />
-          <MatchRowSkeleton />
-          <MatchRowSkeleton />
-          <MatchRowSkeleton />
-          <MatchRowSkeleton />
+        <div className="flex justify-center py-12 lg:py-16">
+          <div className="w-10 h-10 lg:w-12 lg:h-12 border-4 border-accent/30 border-t-accent rounded-full animate-spin" />
         </div>
       ) : isError ? (
         <ErrorState message={strings.error} onRetry={refetch} />
@@ -131,7 +126,7 @@ export default function MatchesPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.22, ease: 'easeOut' }}
-          className="space-y-1"
+          className="space-y-1 lg:space-y-2"
         >
           {filteredMatches.map((match) => (
             <MatchRow

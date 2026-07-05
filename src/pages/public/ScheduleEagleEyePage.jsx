@@ -57,24 +57,17 @@ export default function ScheduleEagleEyePage() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="px-4 py-6 space-y-6"
+      className="px-4 py-6 lg:px-8 xl:px-12 space-y-6 lg:space-y-8 max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto"
     >
-      <div className="flex items-center justify-between mb-2">
-        <div>
-          <h1 className="text-2xl font-bold">{t.schedule.title}</h1>
-          <p className="text-sm text-text-secondary">{t.schedule.subtitle}</p>
-        </div>
-      </div>
-
       {/* Segmented control view toggle with sliding indicator */}
-      <div className="flex bg-bg-surface rounded-xl p-1 mb-6 relative z-0 max-w-sm mx-auto" dir={isAr ? 'rtl' : 'ltr'}>
+      <div className="flex bg-bg-surface rounded-xl p-1 mb-6 lg:mb-8 relative z-0 max-w-sm mx-auto" dir={isAr ? 'rtl' : 'ltr'}>
         <button
           type="button"
           onClick={() => {
             haptic.light()
             setView('table')
           }}
-          className={`flex-1 py-2.5 text-xs font-bold z-10 transition-colors duration-200 ${view === 'table' ? 'text-white schedule-seg-active' : 'text-text-secondary hover:text-text-primary'}`}
+          className={`flex-1 py-2.5 lg:py-3 text-xs lg:text-sm font-bold z-10 transition-colors duration-200 ${view === 'table' ? 'text-white schedule-seg-active' : 'text-text-secondary hover:text-text-primary'}`}
         >
           {t.schedule.tableView}
         </button>
@@ -84,7 +77,7 @@ export default function ScheduleEagleEyePage() {
             haptic.light()
             setView('bracket')
           }}
-          className={`flex-1 py-2.5 text-xs font-bold z-10 transition-colors duration-200 ${view === 'bracket' ? 'text-white schedule-seg-active' : 'text-text-secondary hover:text-text-primary'}`}
+          className={`flex-1 py-2.5 lg:py-3 text-xs lg:text-sm font-bold z-10 transition-colors duration-200 ${view === 'bracket' ? 'text-white schedule-seg-active' : 'text-text-secondary hover:text-text-primary'}`}
         >
           {t.schedule.bracketView}
         </button>

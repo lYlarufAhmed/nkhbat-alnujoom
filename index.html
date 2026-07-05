@@ -1,58 +1,116 @@
 <!doctype html>
-<html class="dark" lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#d4a843" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="apple-touch-icon" href="/logo.png" />
-    <title>نخبة النجوم</title>
-    <link rel="preload" as="image" href="/premium-trophy-bg.webp" fetchpriority="high" />
-    <!--
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/trophy_clean_32.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#d4a843" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="/trophy_clean_180.png" />
+  <title>نخبة النجوم</title>
+  <link rel="preload" as="image" href="/premium-trophy-bg.webp" fetchpriority="high" />
+
+  <style>
+    #app-splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.4s ease;
+    }
+
+    html.dark #app-splash {
+      background: #0e0e0e;
+    }
+
+    html:not(.dark) #app-splash {
+      background: #ffffff;
+    }
+
+    #app-splash img {
+      width: 96px;
+      height: 96px;
+      animation: splash-pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes splash-pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.6;
+        transform: scale(0.94);
+      }
+    }
+
+    #app-splash.splash-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+
+  <!--
       FOUC Prevention: This blocking script MUST run before any CSS or module
       scripts are evaluated. It reads the persisted theme/language from
       localStorage and applies the correct class/direction to <html>
       synchronously, so the browser's first paint already has the right theme.
+      If no saved preference exists yet, it falls back to the device's
+      system light/dark preference instead of a hardcoded default.
     -->
-    <script>
-      (function () {
-        try {
-          var raw = localStorage.getItem('nkhbat-app-settings');
-          var theme = 'dark'; // Default
-          var lang = 'ar';    // Default
-          var dir = 'rtl';    // Default
+  <script>
+    (function () {
+      try {
+        var raw = localStorage.getItem('nkhbat-app-settings');
+        var lang = 'ar';
+        var dir = 'rtl';
+        var theme;
 
-          if (raw) {
-            var state = JSON.parse(raw).state || {};
-            if (state.theme) theme = state.theme;
-            if (state.language) lang = state.language;
-            dir = lang === 'en' ? 'ltr' : 'rtl';
-          }
+        var systemPrefersDark = window.matchMedia &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches;
+        theme = systemPrefersDark ? 'dark' : 'light';
 
-          // Symmetrically apply dark mode class
-          if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-          }
-
-          // Apply language direction
-          document.documentElement.lang = lang;
-          document.documentElement.dir = dir;
-        } catch (e) {
-          // If localStorage is corrupt, fallback silently to default dark theme
-          document.documentElement.classList.add('dark');
-          document.documentElement.lang = 'ar';
-          document.documentElement.dir = 'rtl';
+        if (raw) {
+          var state = JSON.parse(raw).state || {};
+          if (state.theme) theme = state.theme; // saved preference wins
+          if (state.language) lang = state.language;
+          dir = lang === 'en' ? 'ltr' : 'rtl';
         }
-      })();
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+
+        document.documentElement.lang = lang;
+        document.documentElement.dir = dir;
+      } catch (e) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.lang = 'ar';
+        document.documentElement.dir = 'rtl';
+      }
+    })();
+
+    window.__splashStart = Date.now();
+  </script>
+</head>
+
+<body>
+  <div id="app-splash">
+    <img src="/splashscreenlogo.png" alt="nkhbat alnujoom logo" />
+  </div>
+
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>
