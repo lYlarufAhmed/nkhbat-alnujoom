@@ -85,7 +85,7 @@ export default function DownloadButton({ onDownload, isAr, className }) {
             setShowMenu(!showMenu)
           }
         }}
-        className="w-full h-12 px-4 bg-accent text-black font-bold rounded-xl hover:bg-accent-hover transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-accent/20"
+        className="w-full h-10 px-3 bg-accent text-black font-semibold rounded-xl hover:bg-accent-hover transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm shadow-md shadow-accent/20"
       >
         <AnimatePresence mode="wait">
           {isLoading ? (

@@ -483,7 +483,7 @@ export default function TournamentBracketView({ teams = [], isAdmin = false }) {
     <div className="w-full flex flex-col items-center">
       {/* Header with buttons */}
       {hasBracket && (
-        <div className="w-full flex items-center gap-3 mb-4 max-w-md mx-auto">
+        <div className="w-full flex items-center gap-3 mb-4 max-w-sm mx-auto">
           <motion.button
             onClick={() => {
               haptic.light()
@@ -492,7 +492,7 @@ export default function TournamentBracketView({ teams = [], isAdmin = false }) {
             disabled={isSharing || capturing}
             animate={isSharing ? { scale: [1, 0.95, 1] } : { scale: 1 }}
             transition={{ duration: 0.3, repeat: isSharing ? Infinity : 0 }}
-            className="flex-1 h-12 px-4 bg-bg-surface border border-border rounded-xl text-sm font-medium text-text-primary hover:bg-bg-primary transition-all flex items-center justify-center gap-2"
+            className="flex-1 h-10 px-3 bg-bg-surface/50 border border-border/80 rounded-xl text-xs sm:text-sm font-semibold text-text-primary hover:bg-bg-surface hover:border-border transition-all flex items-center justify-center gap-1.5 sm:gap-2 shadow-sm"
           >
             <motion.div
               animate={isSharing ? { rotate: 360 } : { rotate: 0 }}
@@ -509,7 +509,7 @@ export default function TournamentBracketView({ teams = [], isAdmin = false }) {
                 setShowDownloadMenu(!showDownloadMenu)
               }}
               disabled={capturing}
-              className="w-full h-12 px-4 bg-accent text-black font-bold rounded-xl hover:bg-accent-hover transition-all flex items-center justify-center gap-2 text-sm shadow-lg shadow-accent/20"
+              className="w-full h-10 px-3 bg-accent text-black font-semibold rounded-xl hover:bg-accent-hover transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm shadow-md shadow-accent/20"
             >
               {capturing ? (
                 <motion.div

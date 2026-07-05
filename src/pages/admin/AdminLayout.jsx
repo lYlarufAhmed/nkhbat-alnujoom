@@ -116,7 +116,7 @@ export default function AdminLayout() {
           </div>
         </header>
 
-        <div className="flex-1 flex flex-col md:flex-row w-full max-w-7xl mx-auto">
+        <div className="flex-1 flex flex-col md:flex-row w-full max-w-7xl mx-auto overflow-hidden">
 
           <AdminBottomNav />
 

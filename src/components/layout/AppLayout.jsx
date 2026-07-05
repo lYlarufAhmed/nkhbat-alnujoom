@@ -1,4 +1,6 @@
+import { useRef, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import Header from './Header'
 import BottomNav from './BottomNav'
 import QuickAccessFAB from './QuickAccessFAB'
@@ -6,6 +8,14 @@ import QuickAccessFAB from './QuickAccessFAB'
 export default function AppLayout() {
   const location = useLocation()
   const { pathname } = location
+  const mainRef = useRef(null)
+
+  // Reset scroll to top on every route change
+  useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTop = 0
+    }
+  }, [pathname])
   
   const isHome = pathname === '/'
   const mainTabs = ['/', '/matches', '/standings', '/teams']
@@ -19,10 +29,13 @@ export default function AppLayout() {
       {showHeader && <Header />}
       
       <main 
-        className={`flex-1 overflow-y-auto overflow-x-hidden relative w-full ${paddingTop} ${isHome ? '' : 'max-w-md mx-auto'}`}
+        ref={mainRef}
+        className={`flex-1 overflow-y-auto overflow-x-hidden relative w-full ${paddingTop}`}
         style={{ paddingBottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' }}
       >
-        <Outlet />
+        <AnimatePresence mode="wait" initial={false}>
+          <Outlet key={pathname} />
+        </AnimatePresence>
       </main>
       
       <QuickAccessFAB />

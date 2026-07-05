@@ -275,19 +275,19 @@ export default function ScheduleEagleEyeView({
   return (
     <div className={`space-y-4 ${className}`}>
       {/* Header with buttons */}
-      <div className="flex items-center gap-3 max-w-md mx-auto w-full">
+      <div className="flex items-center gap-3 max-w-sm mx-auto w-full">
         <button
           onClick={() => {
             haptic.light()
             handleShare()
           }}
           disabled={capturing}
-          className="flex-1 h-12 px-4 bg-bg-surface border border-border rounded-xl text-sm font-medium text-text-primary hover:bg-bg-primary transition-all flex items-center justify-center gap-2"
+          className="flex-1 h-10 px-3 bg-bg-surface/50 border border-border/80 rounded-xl text-xs sm:text-sm font-semibold text-text-primary hover:bg-bg-surface hover:border-border transition-all flex items-center justify-center gap-1.5 sm:gap-2 shadow-sm"
         >
           <Share2 size={16} />
           {isAr ? 'مشاركة' : 'Share'}
         </button>
-        <DownloadButton onDownload={captureAndDownload} isAr={isAr} className="flex-1 h-12" />
+        <DownloadButton onDownload={captureAndDownload} isAr={isAr} className="flex-1 h-10" />
       </div>
 
       {/* Filter chips */}
