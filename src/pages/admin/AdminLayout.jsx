@@ -85,7 +85,7 @@ export default function AdminLayout() {
             </Link>
             <div className="min-w-0">
               <h1 className="font-bold text-sm md:text-base leading-tight truncate">Admin</h1>
-              <span className="text-[9px] md:text-[10px] text-accent">نخبة النجوم</span>
+              <span className="text-[9px] md:text-[10px] text-accent">GoalChok-গোলছক</span>
             </div>
           </div>
 

@@ -1,4 +1,4 @@
-# نخبة النجوم — Star Elite Cup
+# GoalChok — গোলছক
 
 A full-featured tournament management app built with **React + Vite + Firebase**. Manage teams, groups, matches, live scores, standings, and share schedule views — all in a dark-themed, RTL-first UI.
 

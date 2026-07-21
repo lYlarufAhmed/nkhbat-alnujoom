@@ -1,70 +1,173 @@
 /**
- * Bulk import script for Nkhbat Al-Nujoom QA stress test
- * Creates 12 World Cup teams, players with photos, then matches
+ * Bulk import script for GoalChok Bangladesh Football Clubs
+ * Creates 12 real Bangladeshi football clubs, real rosters, beautiful vector-based SVG logos/photos, and stable IDs
  */
+import { config } from 'dotenv'
+config()
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, setDoc, collection, getDocs, deleteDoc, writeBatch } from 'firebase/firestore'
+import { getFirestore, doc, setDoc, collection, getDocs, deleteDoc } from 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDMSYOaEsRy8G7HAnIojGqVFh-JTb4dH2E",
-  authDomain: "nkhbat-alnujoom.firebaseapp.com",
-  databaseURL: "https://nkhbat-alnujoom-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "nkhbat-alnujoom",
-  storageBucket: "nkhbat-alnujoom.firebasestorage.app",
-  messagingSenderId: "309990493425",
-  appId: "1:309990493425:web:b3f09955052a1651446d50"
+  apiKey: process.env.VITE_FIREBASE_API_KEY || "AIzaSyDMSYOaEsRy8G7HAnIojGqVFh-JTb4dH2E",
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || "nkhbat-alnujoom.firebaseapp.com",
+  databaseURL: process.env.VITE_FIREBASE_DATABASE_URL || "https://nkhbat-alnujoom-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID || "nkhbat-alnujoom",
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || "nkhbat-alnujoom.firebasestorage.app",
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "309990493425",
+  appId: process.env.VITE_FIREBASE_APP_ID || "1:309990493425:web:b3f09955052a1651446d50"
 }
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
-// Simple colored PNG as base64 for team logos (green)
-const TEAM_LOGO_B64 = "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAABL0lEQVR4nO3SIQEAIBDAwE9BGoLRHmIgduL8xGadfema3wEYAANgAAyAATAABsAAGAADYAAMgAEwAAbAABgAA2AADIABMAAGwAAYAANgAAyAATAABsAAGAADYAAMgAEwAAbAABgAA2CAOAPEGSDOAHEGiDNAnAHiDBBngDgDxBkgzgBxBogzQJwB4gwQZ4A4A8QZIM4AcQaIM0CcAeIMEGeAOAPEGSDOAHEGiDNAnAHiDBBngDgDxBkgzgBxBogzQJwB4gwQZ4A4A8QZIM4AcQaIM0CcAeIMEGeAOAPEGSDOAHEGiDNAnAHiDBBngDgDxBkgzgBxBogzQJwB4gwQZ4A4A8QZIM4AcQaIM0CcAeIMEGeAOAPEGSDOAHEGiDNAnAHiDBBngDgDxBkgzgBxD9qVRq+AFWODAAAAAElFTkSuQmCC"
+// Color mappings for authentic Bangladeshi club representations
+const teamColorsMap = {
+  'Bashundhara Kings': { color: 'red', primary: '#C8102E', secondary: '#FFCD00' },
+  'Abahani Limited Dhaka': { color: 'sky', primary: '#6CADDF', secondary: '#FFCD00' },
+  'Mohammedan SC': { color: 'black', primary: '#1A1A1A', secondary: '#FFFFFF' },
+  'Bangladesh Police FC': { color: 'navy', primary: '#003087', secondary: '#C8102E' },
+  'Brothers Union': { color: 'orange', primary: '#FF6600', secondary: '#00A651' },
+  'Chittagong Abahani': { color: 'navy', primary: '#003087', secondary: '#6CADDF' },
+  'Dhaka Wanderers': { color: 'black', primary: '#1A1A1A', secondary: '#B8860B' },
+  'Fakirerpool YMC': { color: 'yellow', primary: '#FFCD00', secondary: '#8B0000' },
+  'Fortis FC': { color: 'dark-green', primary: '#004D40', secondary: '#1A1A1A' },
+  'Rahmatganj MFS': { color: 'green', primary: '#00A651', secondary: '#FFCD00' },
+  'Wari Club': { color: 'yellow', primary: '#FFCD00', secondary: '#00A651' },
+  'Arambagh KS': { color: 'dark-red', primary: '#8B0000', secondary: '#B8860B' }
+}
 
-// Player photo (blue)
-const PLAYER_PHOTO_B64 = "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAmElEQVR4nO3QMREAIBDAsJeDHMTiD2RkoEP2Xmftc382OkBrgA7QGqADtAboAK0BOkBrgA7QGqADtAboAK0BOkBrgA7QGqADtAboAK0BOkBrgA7QGqADtAboAK0BOkBrgA7QGqADtAboAK0BOkBrgA7QGqADtAboAK0BOkBrgA7QGqADtAboAK0BOkBrgA7QGqADtAboAO0BRcCx//EfmEAAAAAASUVORK5CYII="
+// Generate beautiful, clean, modern vector circular badges
+function getTeamSvgLogo(teamName, colors) {
+  const shortName = teamName.split(' ').map(w => w[0]).join('').substring(0, 3).toUpperCase()
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+    <circle cx="60" cy="60" r="54" fill="${colors.primary}" stroke="${colors.secondary}" stroke-width="6"/>
+    <circle cx="60" cy="60" r="46" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="4" opacity="0.6"/>
+    <path d="M 35,48 Q 60,38 85,48 Q 80,82 60,98 Q 40,82 35,48 Z" fill="${colors.secondary}" opacity="0.9"/>
+    <text x="60" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="900" font-size="22" fill="#ffffff" text-anchor="middle" dominant-baseline="middle" style="letter-spacing: 0.5px;">${shortName}</text>
+    <circle cx="60" cy="30" r="4.5" fill="#ffffff"/>
+    <circle cx="46" cy="34" r="3.5" fill="#ffffff"/>
+    <circle cx="74" cy="34" r="3.5" fill="#ffffff"/>
+  </svg>`
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+}
+
+// Generate stylized athlete profile images
+function getPlayerSvgPhoto(playerName, primaryColor) {
+  const initial = playerName.charAt(0).toUpperCase()
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+    <rect width="100" height="100" fill="#1e293b"/>
+    <circle cx="50" cy="40" r="20" fill="#475569"/>
+    <path d="M 20,90 C 20,70 35,60 50,60 C 65,60 80,70 80,90 Z" fill="#334155"/>
+    <circle cx="50" cy="40" r="16" fill="${primaryColor}" opacity="0.3"/>
+    <text x="50" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="bold" font-size="20" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">${initial}</text>
+  </svg>`
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+}
 
 const teams = [
-  { name: 'السعودية', manager: 'هيرفي رينارد', group: 'أ' },
-  { name: 'الأرجنتين', manager: 'ليونيل سكالوني', group: 'أ' },
-  { name: 'المغرب', manager: 'وليد الركراكي', group: 'أ' },
-  { name: 'البرازيل', manager: 'دوريفال جونيور', group: 'ب' },
-  { name: 'إنجلترا', manager: 'غاريث ساوثغيت', group: 'ب' },
-  { name: 'اليابان', manager: 'هاجيمي موريياسو', group: 'ب' },
-  { name: 'فرنسا', manager: 'ديدييه ديشان', group: 'ج' },
-  { name: 'ألمانيا', manager: 'يوليان ناغلسمان', group: 'ج' },
-  { name: 'السنغال', manager: 'أليو سيسي', group: 'ج' },
-  { name: 'إسبانيا', manager: 'لويس دي لا فوينتي', group: 'د' },
-  { name: 'البرتغال', manager: 'روبرتو مارتينيز', group: 'د' },
-  { name: 'هولندا', manager: 'رونالد كومان', group: 'د' },
+  { name: 'Bashundhara Kings', manager: 'Valeriu Tita', group: 'A' },
+  { name: 'Abahani Limited Dhaka', manager: 'Diego Andres Cruciani', group: 'A' },
+  { name: 'Mohammedan SC', manager: 'Alfaz Ahmed', group: 'A' },
+  { name: 'Bangladesh Police FC', manager: 'Aristica Cioaba', group: 'A' },
+  { name: 'Brothers Union', manager: 'Sheikh Jahid Hasan Ameli', group: 'B' },
+  { name: 'Chittagong Abahani', manager: 'Zulfiker Mahmud Mintu', group: 'B' },
+  { name: 'Dhaka Wanderers', manager: 'Mustafa Anwar Parvez', group: 'B' },
+  { name: 'Fakirerpool YMC', manager: 'Mehdi Hasan', group: 'B' },
+  { name: 'Fortis FC', manager: 'Masud Parvez Kaiser', group: 'C' },
+  { name: 'Rahmatganj MFS', manager: 'Kamal Babu', group: 'C' },
+  { name: 'Wari Club', manager: 'Lutfur Rahman', group: 'C' },
+  { name: 'Arambagh KS', manager: 'Anwar Hossain', group: 'C' },
 ]
 
 const playerNames = {
-  'السعودية': ['سالم الدوسري', 'فراس البريكان', 'محمد كنو', 'سعود عبدالحميد', 'حسن كادش', 'علي البليهي', 'موسى الجبالي', 'ناصر الدوسري', 'عبدالله الحمدان', 'أيمن يحيى', 'محمد العويس'],
-  'الأرجنتين': ['ليونيل ميسي', 'خوليان ألفاريز', 'لوتارو مارتينيز', 'أنجيل دي ماريا', 'رودريغو دي بول', 'إينزو فيرنانديز', 'نيكولاس أوتامندي', 'كريستيان روميرو', 'ناهويل مولينا', 'إيميليانو مارتينيز', 'أليخاندرو غارناتشو'],
-  'المغرب': ['أشرف حكيمي', 'حكيم زياش', 'عبدالصمد الزلزولي', 'سفيان أمرابط', 'نصير مزراوي', 'إلياس بن صغير', 'يوسف النصيري', 'عز الدين أوناحي', 'غانم سايس', 'منير المحمدي', 'بدر بانون'],
-  'البرازيل': ['نيمار', 'فينيسيوس جونيور', 'رودريغو', 'رافينيا', 'كاسيميرو', 'لوكاس باكيتا', 'ماركينيوس', 'إيدرسون', 'داني ألفيس', 'غابرييل خيسوس', 'ريتشارليسون'],
-  'إنجلترا': ['هاري كين', 'بوكايو ساكا', 'فيل فودين', 'جود بيلينغهام', 'ديكلان رايس', 'ميسون ماونت', 'كايل ووكر', 'جون ستونز', 'جوردان بيكفورد', 'ماركوس راشفورد', 'جاك غريليش'],
-  'اليابان': ['تاكيفوسا كوبو', 'كاورو ميتوما', 'دايتشي كامادا', 'تايكي إيتو', 'واكو إندو', 'هيديماسا موريتا', 'كوجي ميوشي', 'مايا يوشيدا', 'شويتشي غوندا', 'جونيا إيتو', 'ريكي هاراكاوا'],
-  'فرنسا': ['كيليان مبابي', 'أنطوان غريزمان', 'عثمان ديمبيلي', 'أوريليان تشواميني', 'إدواردو كامافينغا', 'تيو هيرنانديز', 'جول كوندي', 'مايك مينيان', 'أوليفييه جيرو', 'راندال كولو مواني', 'أدريان رابيو'],
-  'ألمانيا': ['توني كروس', 'جمال موسيالا', 'فلوريان فيرتز', 'إيلكاي غوندوغان', 'جوشوا كيميش', 'ليروي ساني', 'كاي هافيرتز', 'أنطونيو روديغر', 'نيكلاس زوله', 'مارك أندريه تير شتيغن', 'نيكو شلوتربيك'],
-  'السنغال': ['ساديو ماني', 'إسماعيلا سار', 'كاليدو كوليبالي', 'إدريسا غاي', 'شيخو كوياتي', 'نامباليس ميندي', 'عبدو ديالو', 'بونا سار', 'إدوارد ميندي', 'نيكولاس جاكسون', 'بابي ماتار سار'],
-  'إسبانيا': ['لامين يامال', 'نيكو ويليامز', 'بيدري', 'غافي', 'رودري', 'داني كارفاخال', 'إيميرك لابورت', 'أوناي سيمون', 'ألفارو موراتا', 'داني أولمو', 'مارك كوكوريلا'],
-  'البرتغال': ['كريستيانو رونالدو', 'برونو فيرنانديز', 'برناردو سيلفا', 'رافائيل لياو', 'جواو كانسيلو', 'ديوغو جوتا', 'روبن دياز', 'فيتينيا', 'ديوغو كوستا', 'نونو مينديز', 'باولو بيرناردو'],
-  'هولندا': ['فيرجيل فان ديك', 'ممفيس ديباي', 'فرينكي دي يونغ', 'كودي غاكبو', 'تجان ريمس', 'دينزل دومفريس', 'ناثان أكي', 'جيريمي فريمبونغ', 'براين بروبي', 'جويل فيرتمان', 'بارت فيربروغين'],
+  'Bashundhara Kings': [
+    'Shekh Morsalin', 'Rakib Hossain', 'Topu Barman', 'Anisur Rahman Zico',
+    'Saad Uddin', 'Sohel Rana', 'Tariq Kazi', 'Robinho',
+    'Miguel Figueira', 'Boburbek Yuldashev', 'Mojibor Rahman Jony'
+  ],
+  'Abahani Limited Dhaka': [
+    'Jamal Bhuyan', 'Foysal Ahmed Fahim', 'Mohammad Ridoy', 'Rahmat Mia',
+    'Mehedi Hasan Royal', 'Shakil Ahad', 'Emeka Ogbugh', 'Cornelius Stewart',
+    'Jonathan David', 'Alamgir Kabir Rana', 'Shahidul Alam Sohel'
+  ],
+  'Mohammedan SC': [
+    'Souleymane Diabate', 'Muzaffar Muzaffarov', 'Emmanuel Tony', 'Jafar Iqbal',
+    'Shakil Hossain', 'Shahriar Emon', 'Minhajur Rahman', 'Sazzad Hossain',
+    'Ashraful Islam Rana', 'Kamrul Islam', 'Arifur Rahman'
+  ],
+  'Bangladesh Police FC': [
+    'Rabiul Hasan', 'Edward Morillo', 'Mateo Palacios', 'Joyonto Kumar Roy',
+    'Al-Amin', 'Monaem Khan Raju', 'Isa Faysal', 'Sokhib Hamidov',
+    'Emon Babu', 'Ahsan Habib Bipul', 'Mahfuz Hasan'
+  ],
+  'Brothers Union': [
+    'Bunyod Shodiev', 'Patrick Sylva', 'Otabek Valijonov', 'Jewel Rana',
+    'Ariful Islam', 'Masud Rana', 'Sabbir Hossain', 'Mohsin Ali',
+    'Sujon Hossain', 'Biplob Bhattacharjee', 'Yousuf Ali'
+  ],
+  'Chittagong Abahani': [
+    'Shokhrukhbek Kholmatov', 'David Ifegwu', 'Pulatov', 'Sohel Rana Jr.',
+    'Mannaf Rabby', 'Koushik Barua', 'Nasirul Islam', 'Saiful Islam',
+    'Mohammad Rocky', 'Ashraful Islam', 'Limon Hossain'
+  ],
+  'Dhaka Wanderers': [
+    'Sourav', 'Pappu', 'Monir Hossain', 'Rony',
+    'Akash', 'Imran', 'Sajib', 'Mithun',
+    'Farhad', 'Shimul', 'Al-Amin'
+  ],
+  'Fakirerpool YMC': [
+    'Russel', 'Monir', 'Shaheen', 'Ripon',
+    'Khorshed', 'Babu', 'Jahid', 'Biplob',
+    'Al-Amin', 'Shakil', 'Rana'
+  ],
+  'Fortis FC': [
+    'Valeriy Gryshyn', 'Pa Omar Babou', 'Shajahan Ali', 'Gani Ahmed Somrat',
+    'Saddam Hossain Anny', 'Rashedul Islam', 'Shanto Kumar', 'Mujahid',
+    'Sabuz', 'Noyon', 'Faruk'
+  ],
+  'Rahmatganj MFS': [
+    'Samuel Mensah Konney', 'Ernest Boateng', 'Mostafa Kahraba', 'Ceesay',
+    'Sushanto Tripura', 'Taj Uddin', 'Mezbah Uddin', 'Noyon',
+    'Nayem', 'Mamun', 'Al-Amin'
+  ],
+  'Wari Club': [
+    'Shamim', 'Ripon', 'Robin', 'Jamil',
+    'Shakil', 'Hridoy', 'Shohel', 'Pappu',
+    'Babu', 'Emon', 'Ashik'
+  ],
+  'Arambagh KS': [
+    'Jewel', 'Nabil', 'Rony', 'Akash',
+    'Arif', 'Sujon', 'Rakib', 'Shanto',
+    'Al-Amin', 'Sajal', 'Emon'
+  ],
 }
 
-const groups = ['أ', 'ب', 'ج', 'د']
+const teamStableIds = {
+  'Bashundhara Kings': '26b2acf4-b751-4b9f-925f-62fe573ad735',
+  'Abahani Limited Dhaka': '66e54040-73f8-4d2b-b959-667604b23846',
+  'Mohammedan SC': 'df9a8c72-4304-4c61-bc23-650a20cac602',
+  'Bangladesh Police FC': '1eb4c3e8-0010-47d4-ab23-7ba78bb92a66',
+  'Brothers Union': 'b679055d-9290-46f2-8fb5-3e4917b5667c',
+  'Chittagong Abahani': '68d2ed29-1a6d-4e2b-a4b1-cc6daa09a6c3',
+  'Dhaka Wanderers': '796c4b79-59e3-4f51-9b1c-fc330687913b',
+  'Fakirerpool YMC': '112cfb4e-a216-4c70-adf5-a72d8a9d407a',
+  'Fortis FC': 'b9238264-9ce2-4c58-9ac5-d14d55acf784',
+  'Rahmatganj MFS': '3e4cdd05-8fd0-4ea8-aea9-170e6586d1e1',
+  'Wari Club': 'b78b0335-f9fb-4430-86da-ac178048ba0e',
+  'Arambagh KS': 'c6b09d68-93de-4717-b9ce-79a89933182a',
+}
 
 async function createTeams() {
   const teamIds = {}
   
   for (const t of teams) {
-    const id = crypto.randomUUID()
-    const players = (playerNames[t.name] || ['لاعب1', 'لاعب2', 'لاعب3', 'لاعب4', 'لاعب5', 'لاعب6', 'لاعب7', 'لاعب8', 'لاعب9', 'لاعب10', 'لاعب11']).map((name, i) => ({
-      id: `player-${i}-${name}`,
+    const id = teamStableIds[t.name] || crypto.randomUUID()
+    const colorProfile = teamColorsMap[t.name] || { color: 'grey', primary: '#9E9E9E', secondary: '#ffffff' }
+    
+    const players = (playerNames[t.name] || ['Player 1', 'Player 2', 'Player 3']).map((name, i) => ({
+      id: `player-${i}-${name.replace(/\s+/g, '-').toLowerCase()}`,
       name,
-      photo: PLAYER_PHOTO_B64,
+      photo: getPlayerSvgPhoto(name, colorProfile.primary),
     }))
     
     await setDoc(doc(db, 'teams', id), {
@@ -72,13 +175,14 @@ async function createTeams() {
       name: t.name,
       manager: t.manager,
       group: t.group,
-      logo: TEAM_LOGO_B64,
+      color: colorProfile.color, // Save core color ID so frontend displays customized matching theme widgets automatically
+      logo: getTeamSvgLogo(t.name, colorProfile),
       players,
       createdAt: new Date().toISOString(),
     })
     
     teamIds[t.name] = id
-    console.log(`  ✅ ${t.name} → ${id} (${players.length} players)`)
+    console.log(`  ✅ ${t.name} → ${id} (${players.length} players with custom SVGs)`)
   }
   
   return teamIds
@@ -96,22 +200,18 @@ async function deleteExistingTeams() {
 }
 
 async function main() {
-  console.log('=== Starting bulk import ===\n')
+  console.log('=== Starting bulk import of Bangladesh Football Clubs ===\n')
   
   // Step 1: Delete existing teams
   console.log('Step 1: Clearing existing data...')
   await deleteExistingTeams()
   
-  // Step 2: Create 12 teams
-  console.log('Step 2: Creating 12 World Cup teams...')
+  // Step 2: Create teams
+  console.log('Step 2: Creating 12 Bangladeshi teams with vector assets...')
   const teamIds = await createTeams()
   
   console.log('\n=== Import complete ===')
-  console.log(`✅ ${Object.keys(teamIds).length} teams created`)
-  console.log('\nTeam IDs for reference:')
-  for (const [name, id] of Object.entries(teamIds)) {
-    console.log(`  ${name}: ${id}`)
-  }
+  console.log(`✅ ${Object.keys(teamIds).length} teams created successfully`)
 }
 
 main().catch(console.error)

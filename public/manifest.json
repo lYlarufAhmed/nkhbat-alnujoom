@@ -1,7 +1,7 @@
 {
-  "name": "نخبة النجوم",
-  "short_name": "نخبة النجوم",
-  "description": "Nkhbat Al-Nujoom Tournament App",
+  "name": "GoalChok-গোলছক",
+  "short_name": "GoalChok",
+  "description": "GoalChok-গোলছক Tournament App",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0e0e0e",

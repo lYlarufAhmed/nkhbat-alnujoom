@@ -12,7 +12,7 @@ const getPageTitle = (path, lang) => {
   if (path === '/top-scorers') return lang === 'ar' ? 'الهدافون' : 'Top Scorers'
   if (path === '/schedule') return lang === 'ar' ? 'جدول' : 'Schedule'
   if (path === '/more') return lang === 'ar' ? 'المزيد' : 'More Settings'
-  return lang === 'ar' ? 'نخبة النجوم' : 'Nkhbat Alnujoom'
+  return lang === 'ar' ? 'GoalChok-গোলছক' : 'GoalChok-গোলছক'
 }
 
 /** Smart fallback route for when there's no browser history */

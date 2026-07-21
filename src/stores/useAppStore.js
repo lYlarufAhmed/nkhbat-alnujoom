@@ -8,7 +8,7 @@ const DOC_ID = 'config'
 export const useAppStore = create((set, get) => {
   return {
     theme: 'dark', // 'dark' | 'light'
-    language: 'ar', // 'ar' | 'en'
+    language: 'en', // 'ar' | 'en'
     unsub: null,
     
     // ─── Realtime Firebase Sync ───────────────────────────────────────
@@ -22,7 +22,7 @@ export const useAppStore = create((set, get) => {
             const data = snapshot.data()
             set({
               theme: data.theme || 'dark',
-              language: data.language || 'ar',
+              language: data.language || 'en',
             })
           }
         },

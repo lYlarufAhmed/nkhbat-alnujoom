@@ -45,7 +45,7 @@ test.describe('Standings Auto-Update Reproduction Test', () => {
     await page.getByRole('button', { name: 'دخول' }).click()
 
     // Verify successful login
-    await expect(page.getByText('لوحة تحكم بطولة نخبة النجوم')).toBeVisible()
+    await expect(page.getByText('لوحة تحكم بطولة GoalChok-গোলছক')).toBeVisible()
 
     // 3. Navigate to Matches Admin Page to find a scheduled match where both teams belong to the same group
     await page.goto('/admin/matches')

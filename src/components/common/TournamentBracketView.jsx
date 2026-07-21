@@ -359,8 +359,8 @@ export default function TournamentBracketView({ teams = [], isAdmin = false }) {
       const blob = await (await fetch(dataUrl)).blob()
       const file = new File([blob], `bracket-${Date.now()}.png`, { type: 'image/png' })
       const shareData = {
-        title: isAr ? 'طريق النهائي - نخبة النجوم' : 'Road to Finals - Nkhbat Alnujoom',
-        text: isAr ? 'شاهد طريق الفرق للنهائي في بطولة نخبة النجوم' : 'Check out the road to finals in Nkhbat Alnujoom tournament',
+        title: isAr ? 'طريق النهائي - GoalChok' : 'Road to Finals - GoalChok-গোলছক',
+        text: isAr ? 'شاهد طريق الفرق للنهائي في بطولة GoalChok-গোলছক' : 'Check out the road to finals in GoalChok-গোলছক tournament',
         files: [file],
       }
       if (navigator.canShare && navigator.canShare(shareData)) {

@@ -1,45 +1,107 @@
 /**
- * Create matches, score them, make Saudi Arabia win.
+ * Create matches, score them, and simulate tournament outcomes with real Bangladesh Football Clubs.
  */
+import { config } from 'dotenv'
+config()
 import { initializeApp } from 'firebase/app'
 import { getFirestore, doc, setDoc, getDocs, collection, deleteDoc, writeBatch, updateDoc as upd } from 'firebase/firestore'
 
-const firebaseConfig = { apiKey: 'AIzaSyA8Txx0EDjGqSZdx-l8ru_dH2E', authDomain: 'nkhbat-alnujoom.firebaseapp.com', databaseURL: 'https://nkhbat-alnujoom-default-rtdb.asia-southeast1.firebasedatabase.app', projectId: 'nkhbat-alnujoom', storageBucket: 'nkhbat-alnujoom.firebasestorage.app', messagingSenderId: '309990493425', appId: '1:309990493425:web:b3f09955052a1651446d50' }
+const firebaseConfig = {
+  apiKey: process.env.VITE_FIREBASE_API_KEY || 'AIzaSyA8Txx0EDjGqSZdx-l8ru_dH2E',
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || 'nkhbat-alnujoom.firebaseapp.com',
+  databaseURL: process.env.VITE_FIREBASE_DATABASE_URL || 'https://nkhbat-alnujoom-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID || 'nkhbat-alnujoom',
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || 'nkhbat-alnujoom.firebasestorage.app',
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '309990493425',
+  appId: process.env.VITE_FIREBASE_APP_ID || '1:309990493425:web:b3f09955052a1651446d50'
+}
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
 const teamIds = {
-  'السعودية': '26b2acf4-b751-4b9f-925f-62fe573ad735',
-  'الأرجنتين': '66e54040-73f8-4d2b-b959-667604b23846',
-  'المغرب': 'df9a8c72-4304-4c61-bc23-650a20cac602',
-  'إسبانيا': '1eb4c3e8-0010-47d4-ab23-7ba78bb92a66',
-  'البرازيل': 'b679055d-9290-46f2-8fb5-3e4917b5667c',
-  'إنجلترا': '68d2ed29-1a6d-4e2b-a4b1-cc6daa09a6c3',
-  'اليابان': '796c4b79-59e3-4f51-9b1c-fc330687913b',
-  'البرتغال': '112cfb4e-a216-4c70-adf5-a72d8a9d407a',
-  'فرنسا': 'b9238264-9ce2-4c58-9ac5-d14d55acf784',
-  'ألمانيا': '3e4cdd05-8fd0-4ea8-aea9-170e6586d1e1',
-  'السنغال': 'b78b0335-f9fb-4430-86da-ac178048ba0e',
-  'هولندا': 'c6b09d68-93de-4717-b9ce-79a89933182a',
+  'Bashundhara Kings': '26b2acf4-b751-4b9f-925f-62fe573ad735',
+  'Abahani Limited Dhaka': '66e54040-73f8-4d2b-b959-667604b23846',
+  'Mohammedan SC': 'df9a8c72-4304-4c61-bc23-650a20cac602',
+  'Bangladesh Police FC': '1eb4c3e8-0010-47d4-ab23-7ba78bb92a66',
+  'Brothers Union': 'b679055d-9290-46f2-8fb5-3e4917b5667c',
+  'Chittagong Abahani': '68d2ed29-1a6d-4e2b-a4b1-cc6daa09a6c3',
+  'Dhaka Wanderers': '796c4b79-59e3-4f51-9b1c-fc330687913b',
+  'Fakirerpool YMC': '112cfb4e-a216-4c70-adf5-a72d8a9d407a',
+  'Fortis FC': 'b9238264-9ce2-4c58-9ac5-d14d55acf784',
+  'Rahmatganj MFS': '3e4cdd05-8fd0-4ea8-aea9-170e6586d1e1',
+  'Wari Club': 'b78b0335-f9fb-4430-86da-ac178048ba0e',
+  'Arambagh KS': 'c6b09d68-93de-4717-b9ce-79a89933182a',
 }
 
 const playerNames = {
-  'السعودية': ['سالم الدوسري', 'فراس البريكان', 'محمد كنو', 'سعود عبدالحميد', 'حسن كادش', 'علي البليهي', 'موسى الجبالي', 'ناصر الدوسري', 'عبدالله الحمدان', 'أيمن يحيى', 'محمد العويس'],
-  'الأرجنتين': ['ميسي', 'ألفاريز', 'مارتينيز', 'دي ماريا', 'دي بول', 'فيرنانديز', 'أوتامندي', 'روميرو', 'مولينا', 'إيميليانو م.', 'غارناتشو'],
-  'المغرب': ['أشرف حكيمي', 'حكيم زياش', 'عبدالصمد الزلزولي', 'سفيان أمرابط', 'نصير مزراوي', 'إلياس بن صغير', 'يوسف النصيري', 'عز الدين أوناحي', 'غانم سايس', 'منير المحمدي', 'بدر بانون'],
-  'إسبانيا': ['لامين يامال', 'نيكو ويليامز', 'بيدري', 'غافي', 'رودري', 'كارفاخال', 'لابورت', 'أوناي سيمون', 'موراتا', 'داني أولمو', 'كوكوريلا'],
-  'البرازيل': ['نيمار', 'فينيسيوس ج.', 'رودريغو', 'رافينيا', 'كاسيميرو', 'باكيتا', 'ماركينيوس', 'إيدرسون', 'داني ألفيس', 'غابرييل خيسوس', 'ريتشارليسون'],
-  'إنجلترا': ['هاري كين', 'بوكايو ساكا', 'فيل فودين', 'بيلينغهام', 'ديكلان رايس', 'ميسون ماونت', 'كايل ووكر', 'جون ستونز', 'بيكفورد', 'راشفورد', 'جاك غريليش'],
-  'اليابان': ['تاكيفوسا كوبو', 'كاورو ميتوما', 'كامادا', 'تايكي إيتو', 'واكو إندو', 'هيديماسا موريتا', 'ميوشي', 'مايا يوشيدا', 'شويتشي غوندا', 'جونيا إيتو', 'ريكي هاراكاوا'],
-  'البرتغال': ['كريستيانو ر.', 'برونو ف.', 'برناردو س.', 'رافائيل لياو', 'جواو كانسيلو', 'ديوغو جوتا', 'روبن دياز', 'فيتينيا', 'ديوغو كوستا', 'نونو مينديز', 'باولو ب.'],
-  'فرنسا': ['كيليان مبابي', 'غريزمان', 'ديمبيلي', 'تشواميني', 'كامافينغا', 'تيو هيرنانديز', 'جول كوندي', 'مايك مينيان', 'جيرو', 'كولو مواني', 'رابيو'],
-  'ألمانيا': ['توني كروس', 'موسيالا', 'فيرتز', 'غوندوغان', 'كيميش', 'ليروي ساني', 'كافيرتز', 'روديغر', 'نيكلاس زوله', 'تير شتيغن', 'شلوتربيك'],
-  'السنغال': ['ساديو ماني', 'إسماعيلا سار', 'كوليبالي', 'إدريسا غاي', 'كوياتي', 'نامباليس ميندي', 'عبدو ديالو', 'بونا سار', 'إدوارد ميندي', 'جاكسون', 'ب. ماتار سار'],
-  'هولندا': ['فان ديك', 'ممفيس ديباي', 'فرينكي دي يونغ', 'غاكبو', 'تجان ريمس', 'دومفريس', 'ناثان أكي', 'فريمبونغ', 'بروبي', 'فيرتيمان', 'فيربروغين'],
+  'Bashundhara Kings': [
+    'Shekh Morsalin', 'Rakib Hossain', 'Topu Barman', 'Anisur Rahman Zico',
+    'Saad Uddin', 'Sohel Rana', 'Tariq Kazi', 'Robinho',
+    'Miguel Figueira', 'Boburbek Yuldashev', 'Mojibor Rahman Jony'
+  ],
+  'Abahani Limited Dhaka': [
+    'Jamal Bhuyan', 'Foysal Ahmed Fahim', 'Mohammad Ridoy', 'Rahmat Mia',
+    'Mehedi Hasan Royal', 'Shakil Ahad', 'Emeka Ogbugh', 'Cornelius Stewart',
+    'Jonathan David', 'Alamgir Kabir Rana', 'Shahidul Alam Sohel'
+  ],
+  'Mohammedan SC': [
+    'Souleymane Diabate', 'Muzaffar Muzaffarov', 'Emmanuel Tony', 'Jafar Iqbal',
+    'Shakil Hossain', 'Shahriar Emon', 'Minhajur Rahman', 'Sazzad Hossain',
+    'Ashraful Islam Rana', 'Kamrul Islam', 'Arifur Rahman'
+  ],
+  'Bangladesh Police FC': [
+    'Rabiul Hasan', 'Edward Morillo', 'Mateo Palacios', 'Joyonto Kumar Roy',
+    'Al-Amin', 'Monaem Khan Raju', 'Isa Faysal', 'Sokhib Hamidov',
+    'Emon Babu', 'Ahsan Habib Bipul', 'Mahfuz Hasan'
+  ],
+  'Brothers Union': [
+    'Bunyod Shodiev', 'Patrick Sylva', 'Otabek Valijonov', 'Jewel Rana',
+    'Ariful Islam', 'Masud Rana', 'Sabbir Hossain', 'Mohsin Ali',
+    'Sujon Hossain', 'Biplob Bhattacharjee', 'Yousuf Ali'
+  ],
+  'Chittagong Abahani': [
+    'Shokhrukhbek Kholmatov', 'David Ifegwu', 'Pulatov', 'Sohel Rana Jr.',
+    'Mannaf Rabby', 'Koushik Barua', 'Nasirul Islam', 'Saiful Islam',
+    'Mohammad Rocky', 'Ashraful Islam', 'Limon Hossain'
+  ],
+  'Dhaka Wanderers': [
+    'Sourav', 'Pappu', 'Monir Hossain', 'Rony',
+    'Akash', 'Imran', 'Sajib', 'Mithun',
+    'Farhad', 'Shimul', 'Al-Amin'
+  ],
+  'Fakirerpool YMC': [
+    'Russel', 'Monir', 'Shaheen', 'Ripon',
+    'Khorshed', 'Babu', 'Jahid', 'Biplob',
+    'Al-Amin', 'Shakil', 'Rana'
+  ],
+  'Fortis FC': [
+    'Valeriy Gryshyn', 'Pa Omar Babou', 'Shajahan Ali', 'Gani Ahmed Somrat',
+    'Saddam Hossain Anny', 'Rashedul Islam', 'Shanto Kumar', 'Mujahid',
+    'Sabuz', 'Noyon', 'Faruk'
+  ],
+  'Rahmatganj MFS': [
+    'Samuel Mensah Konney', 'Ernest Boateng', 'Mostafa Kahraba', 'Ceesay',
+    'Sushanto Tripura', 'Taj Uddin', 'Mezbah Uddin', 'Noyon',
+    'Nayem', 'Mamun', 'Al-Amin'
+  ],
+  'Wari Club': [
+    'Shamim', 'Ripon', 'Robin', 'Jamil',
+    'Shakil', 'Hridoy', 'Shohel', 'Pappu',
+    'Babu', 'Emon', 'Ashik'
+  ],
+  'Arambagh KS': [
+    'Jewel', 'Nabil', 'Rony', 'Akash',
+    'Arif', 'Sujon', 'Rakib', 'Shanto',
+    'Al-Amin', 'Sajal', 'Emon'
+  ],
 }
 
-const groups = { أ: ['السعودية', 'الأرجنتين', 'المغرب', 'إسبانيا'], ب: ['البرازيل', 'إنجلترا', 'اليابان', 'البرتغال'], ج: ['فرنسا', 'ألمانيا', 'السنغال', 'هولندا'] }
+const groups = { 
+  A: ['Bashundhara Kings', 'Abahani Limited Dhaka', 'Mohammedan SC', 'Bangladesh Police FC'], 
+  B: ['Brothers Union', 'Chittagong Abahani', 'Dhaka Wanderers', 'Fakirerpool YMC'], 
+  C: ['Fortis FC', 'Rahmatganj MFS', 'Wari Club', 'Arambagh KS'] 
+}
 
 function roundRobinPairs(teams) {
   const pairs = []
@@ -69,7 +131,7 @@ async function main() {
   console.log('\nStep 3: Creating 18 group matches...')
   const dates = ['2026-06-20', '2026-06-21', '2026-06-22', '2026-06-23', '2026-06-24', '2026-06-25']
   const times = ['18:00', '20:00', '22:00']
-  const venues = ['ملعب الملك فهد', 'مدينة الرياض الرياضية', 'ملعب الأمير فيصل', 'استاد الملك عبدالله', 'ملعب الملك سعود', 'استاد جوهرة']
+  const venues = ['Bangabandhu National Stadium', 'Bashundhara Kings Arena', 'MA Aziz Stadium', 'Sylhet District Stadium', 'Rajshahi District Stadium', 'Comilla Town Stadium']
 
   let matchIdx = 0
   const createdMatches = []
@@ -96,13 +158,13 @@ async function main() {
   console.log('\nStep 4: Scoring all matches...')
 
   const matchScores = [
-    // Group أ — Saudi Arabia wins!  
-    [4, 1], [3, 0], [5, 2],  // السعودية vs الأرجنتين, المغرب, إسبانيا
-    [2, 1], [1, 1], [2, 0],  // الأرجنتين vs المغرب, إسبانيا | المغرب vs إسبانيا
-    // Group ب
+    // Group A — Bashundhara Kings Dominate!  
+    [4, 1], [3, 0], [5, 2],  // Kings vs Abahani, Mohammedan, Police
+    [2, 1], [1, 1], [2, 0],  // Abahani vs Mohammedan, Police | Mohammedan vs Police
+    // Group B
     [2, 2], [3, 1], [1, 0],
     [3, 0], [2, 1], [1, 0],
-    // Group ج
+    // Group C
     [1, 1], [3, 0], [2, 1],
     [2, 0], [3, 2], [1, 1],
   ]
@@ -132,31 +194,15 @@ async function main() {
   // Print results
   console.log('\n📊 === TOURNAMENT RESULTS ===')
   console.log('')
-  console.log('Group أ:')
-  console.log('  السعودية 4-1 الأرجنتين')
-  console.log('  السعودية 3-0 المغرب')
-  console.log('  السعودية 5-2 إسبانيا')
-  console.log('  الأرجنتين 2-1 المغرب')
-  console.log('  الأرجنتين 1-1 إسبانيا')
-  console.log('  المغرب 2-0 إسبانيا')
+  console.log('Group A:')
+  console.log('  Bashundhara Kings 4-1 Abahani Limited Dhaka')
+  console.log('  Bashundhara Kings 3-0 Mohammedan SC')
+  console.log('  Bashundhara Kings 5-2 Bangladesh Police FC')
+  console.log('  Abahani Limited Dhaka 2-1 Mohammedan SC')
+  console.log('  Abahani Limited Dhaka 1-1 Bangladesh Police FC')
+  console.log('  Mohammedan SC 2-0 Bangladesh Police FC')
   console.log('')
-  console.log('Group ب:')
-  console.log('  البرازيل 2-2 إنجلترا')
-  console.log('  البرازيل 3-1 اليابان')
-  console.log('  البرازيل 1-0 البرتغال')
-  console.log('  إنجلترا 3-0 اليابان')
-  console.log('  إنجلترا 2-1 البرتغال')
-  console.log('  اليابان 1-0 البرتغال')
-  console.log('')
-  console.log('Group ج:')
-  console.log('  فرنسا 1-1 ألمانيا')
-  console.log('  فرنسا 3-0 السنغال')
-  console.log('  فرنسا 2-1 هولندا')
-  console.log('  ألمانيا 2-0 السنغال')
-  console.log('  ألمانيا 3-2 هولندا')
-  console.log('  السنغال 1-1 هولندا')
-  console.log('')
-  console.log('🏆 السعودية wins Group أ with 3 wins (9pts)!')
+  console.log('🏆 Bashundhara Kings wins Group A with 3 wins (9pts)!')
 
   // Verify count
   console.log(`\n✅ ${matchScores.length} matches scored successfully`)

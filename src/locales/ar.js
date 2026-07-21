@@ -18,7 +18,7 @@ export const ar = {
     arGroups: { A: 'أ', B: 'ب', C: 'ج' }
   },
   home: {
-    title: 'بطولة نخبة النجوم',
+    title: 'GoalChok-গোলছক',
     subtitle: 'بطولة',
     groupsTable: 'ترتيب المجموعات',
     matchesSchedule: 'جدول المباريات',
@@ -136,7 +136,7 @@ export const ar = {
     languageDesc: 'تغيير لغة واجهة التطبيق',
     admin: 'لوحة التحكم',
     adminDesc: 'إدارة البطولة والنتائج والفرق',
-    appName: 'بطولة نخبة النجوم',
+    appName: 'GoalChok-গোলছক',
     version: 'الإصدار 2026'
   },
   notFound: {

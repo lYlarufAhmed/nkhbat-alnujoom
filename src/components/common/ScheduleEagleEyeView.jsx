@@ -182,7 +182,7 @@ export default function ScheduleEagleEyeView({
 
       if (format === 'png') {
         const link = document.createElement('a')
-        link.download = `nkhbat-alnujoom-${new Date().toISOString().split('T')[0]}.png`
+        link.download = `goalchok-${new Date().toISOString().split('T')[0]}.png`
         link.href = outCanvas.toDataURL('image/png')
         link.click()
       } else {
@@ -194,7 +194,7 @@ export default function ScheduleEagleEyeView({
           format: [canvasWidth, canvasHeight],
         })
         pdf.addImage(imgData, 'JPEG', 0, 0, canvasWidth, canvasHeight)
-        pdf.save(`nkhbat-alnujoom-${new Date().toISOString().split('T')[0]}.pdf`)
+        pdf.save(`goalchok-${new Date().toISOString().split('T')[0]}.pdf`)
       }
     } catch (err) {
       console.error('All capture methods failed:', err)
@@ -246,8 +246,8 @@ export default function ScheduleEagleEyeView({
       const blob = await (await fetch(dataUrl)).blob()
       const file = new File([blob], `schedule-${Date.now()}.png`, { type: 'image/png' })
       const shareData = {
-        title: isAr ? 'جدول نخبة النجوم' : 'Nkhbat Alnujoom Schedule',
-        text: isAr ? 'جدول مباريات بطولة نخبة النجوم' : 'Check out the tournament schedule!',
+        title: isAr ? 'جدول GoalChok-গোলছক' : 'GoalChok-গোলছক Schedule',
+        text: isAr ? 'جدول مباريات بطولة GoalChok-গোলছক' : 'Check out the GoalChok-গোলছক tournament schedule!',
         files: [file],
       }
       if (navigator.canShare && navigator.canShare(shareData)) {

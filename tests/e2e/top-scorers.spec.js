@@ -22,7 +22,7 @@ test.describe('Top Scorers Team Name E2E Test', () => {
     await page.getByRole('button', { name: 'دخول' }).click()
 
     // Verify successful login
-    await expect(page.getByText('لوحة تحكم بطولة نخبة النجوم')).toBeVisible()
+    await expect(page.getByText('لوحة تحكم بطولة GoalChok-গোলছক')).toBeVisible()
 
     // 2. Navigate to Matches Admin Page to find or generate matches
     await page.goto('/admin/matches')

@@ -18,7 +18,7 @@ export const en = {
     arGroups: { A: 'A', B: 'B', C: 'C' }
   },
   home: {
-    title: 'Star Elite Cup',
+    title: 'GoalChok-গোলছক',
     subtitle: 'Championship',
     groupsTable: 'Group Standings',
     matchesSchedule: 'Match Schedule',
@@ -130,7 +130,7 @@ export const en = {
     languageDesc: 'Change the app interface language',
     admin: 'Admin Panel',
     adminDesc: 'Manage tournament, scores, and teams',
-    appName: 'Star Elite Cup',
+    appName: 'GoalChok-গোলছক',
     version: 'Version 2026'
   },
   notFound: {

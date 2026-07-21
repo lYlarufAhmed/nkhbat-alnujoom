@@ -21,7 +21,11 @@ export default function TeamLogo({ logo, name, color, size = 'md', className = '
       }
     >
       {logo ? (
-        <img src={logo} alt={name || 'Team logo'} className="w-full h-full object-cover" />
+        <img
+          src={logo.startsWith('data:') || logo.startsWith('http') || logo.startsWith('/') ? logo : `data:image/png;base64,${logo}`}
+          alt={name || 'Team logo'}
+          className="w-full h-full object-cover"
+        />
       ) : (
         <span className="font-bold text-white drop-shadow-sm">{getTeamInitial(name)}</span>
       )}

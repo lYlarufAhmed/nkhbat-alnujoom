@@ -33,7 +33,7 @@ const en = {
   // Dashboard
   dashboard: {
     welcome: 'Welcome, Admin',
-    subtitle: 'Star Elite Cup tournament control panel',
+    subtitle: 'GoalChok-গোলছক tournament control panel',
     registeredTeams: 'Registered Teams',
     totalMatches: 'Matches',
     completed: 'Completed',

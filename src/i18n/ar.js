@@ -33,7 +33,7 @@ const ar = {
   // Dashboard
   dashboard: {
     welcome: 'مرحباً، المشرف',
-    subtitle: 'لوحة تحكم بطولة نخبة النجوم',
+    subtitle: 'لوحة تحكم بطولة GoalChok-গোলছক',
     registeredTeams: 'الفرق المسجلة',
     totalMatches: 'المباريات',
     completed: 'المنتهية',

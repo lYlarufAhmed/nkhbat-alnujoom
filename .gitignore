@@ -28,3 +28,4 @@ test-results/
 playwright-report/
 .pnpm-store
 node_modules
+.env

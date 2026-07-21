@@ -1,14 +1,16 @@
+import { config } from 'dotenv'
+config()
 import { initializeApp } from 'firebase/app'
 import { getFirestore, doc, getDocs, collection, updateDoc } from 'firebase/firestore'
 
 const app = initializeApp({
-  apiKey: 'AIzaSyA8Txx0EDjGqSZdx-l8ru_dH2E',
-  authDomain: 'nkhbat-alnujoom.firebaseapp.com',
-  projectId: 'nkhbat-alnujoom',
-  databaseURL: 'https://nkhbat-alnujoom-default-rtdb.asia-southeast1.firebasedatabase.app',
-  storageBucket: 'nkhbat-alnujoom.firebasestorage.app',
-  messagingSenderId: '309990493425',
-  appId: '1:309990493425:web:b3f09955052a1651446d50',
+  apiKey: process.env.VITE_FIREBASE_API_KEY || 'AIzaSyA8Txx0EDjGqSZdx-l8ru_dH2E',
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || 'nkhbat-alnujoom.firebaseapp.com',
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID || 'nkhbat-alnujoom',
+  databaseURL: process.env.VITE_FIREBASE_DATABASE_URL || 'https://nkhbat-alnujoom-default-rtdb.asia-southeast1.firebasedatabase.app',
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || 'nkhbat-alnujoom.firebasestorage.app',
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '309990493425',
+  appId: process.env.VITE_FIREBASE_APP_ID || '1:309990493425:web:b3f09955052a1651446d50',
 })
 
 const db = getFirestore(app)

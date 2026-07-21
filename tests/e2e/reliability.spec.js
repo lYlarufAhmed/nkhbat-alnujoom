@@ -8,7 +8,7 @@ test.describe('Reliability & Offline-First Tests', () => {
 
   test('should load the home page correctly with the title in Arabic/English', async ({ page }) => {
     // Wait for the title to be visible (handles slower offline timeouts elegantly)
-    const titleLocator = page.getByText('نخبة النجوم').or(page.getByText('Star Elite Cup'))
+    const titleLocator = page.getByText('GoalChok-গোলছক')
     await expect(titleLocator.first()).toBeVisible({ timeout: 15000 })
   })
 
@@ -34,13 +34,13 @@ test.describe('Reliability & Offline-First Tests', () => {
 
     // 6. Reload should load successfully
     await page.reload()
-    const titleLocator = page.getByText('نخبة النجوم').or(page.getByText('Star Elite Cup'))
+    const titleLocator = page.getByText('GoalChok-গোলছক')
     await expect(titleLocator.first()).toBeVisible({ timeout: 15000 })
   })
 
   test('should toggle language and theme without crashes', async ({ page }) => {
     // Wait for initial load
-    const titleLocator = page.getByText('نخبة النجوم').or(page.getByText('Star Elite Cup'))
+    const titleLocator = page.getByText('GoalChok-গোলছক')
     await expect(titleLocator.first()).toBeVisible({ timeout: 15000 })
 
     // We try to trigger buttons in the UI (like theme or language)
